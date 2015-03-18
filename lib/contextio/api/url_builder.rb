@@ -92,6 +92,11 @@ class ContextIO
       register_url ContextIO::FolderCollection do |folders|
         "accounts/#{folders.source.account.id}/sources/#{folders.source.label}/folders"
       end
+      
+      register_url ContextIO::Folder do |folder|
+        "accounts/#{folder.source.account.id}/sources/#{folder.source.label}/folders/#{folder.name}"
+      end
+
 
       register_url ContextIO::Message do |message|
         "accounts/#{message.account.id}/messages/#{message.message_id}"
