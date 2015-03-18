@@ -2,13 +2,15 @@ require 'contextio/api/association_helpers'
 
 class ContextIO
   class Folder
-    def self.association_name
-      :folder
-    end
+    include ContextIO::API::Resource
+
+    self.primary_key = :name
+    self.association_name = :folder
+
     ContextIO::API::AssociationHelpers.register_resource(self, :folder)
 
     # (see ContextIO#api)
-    attr_reader :api, :source, :name, :attributes, :delim, :nb_messages,
+    lazy_attributes :api, :source, :name, :attributes, :delim, :nb_messages,
                 :uidvalidity, :nb_unseen_messages
     private :attributes
 
