@@ -129,7 +129,12 @@ class ContextIO
         normalized_params
       end
 
-      connection.send(method, path(resource_path), normalized_params, headers)
+      connection.send(method, path(resource_path), normalized_params, headers) do |request|
+        if request.method == :put
+          request.params = normalized_params
+          request.body   = {}
+        end
+      end
     end
 
     # So that we can accept full URLs, this strips the domain and version number
