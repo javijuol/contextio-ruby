@@ -70,8 +70,9 @@ class ContextIO
         folder_name = folder.to_s
         source_label = source.to_s
       end
-
-      api.request(:post, resource_url, dst_folder: folder_name, dst_source: source_label)['success']
+      params = {dst_folder: folder_name}
+      params[:dst_source] = source_label unless source_label.empty?
+      api.request(:post, resource_url, params)['success']
     end
 
     # You can call this with a Folder object, in which case, the source from the
@@ -85,7 +86,9 @@ class ContextIO
         source_label = source.to_s
       end
 
-      api.request(:post, resource_url, dst_folder: folder_name, dst_source: source_label, move: 1)['success']
+      params = {dst_folder: folder_name, move: 1}
+      params[:dst_source] = source_label unless source_label.empty?
+      api.request(:post, resource_url, params)['success']
     end
 
     def delete
