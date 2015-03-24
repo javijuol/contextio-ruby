@@ -13,6 +13,11 @@ class ContextIO
     def create(folder_name, folder_delimiter='/')
       api.request(:put, "#{resource_url}/#{folder_name}", delim: folder_delimiter)['success']
     end
+
+    def create_if_not_exists(folder_name, folder_delimiter='/')
+      create(folder_name, folder_delimiter) unless self[folder_name].exists?
+    end
+    
   end
 end
 
