@@ -56,5 +56,10 @@ class ContextIO
 
       @messages ||= association_class.new(api, account: source.account).where(folder: self.name)
     end
+
+    def exists?
+      !!self.uidvalidity rescue false
+    end
+    
   end
 end
