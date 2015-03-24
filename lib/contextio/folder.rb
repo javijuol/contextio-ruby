@@ -7,6 +7,8 @@ class ContextIO
     self.primary_key = :name
     self.association_name = :folder
 
+    has_many :folder_messages
+
     ContextIO::API::AssociationHelpers.register_resource(self, :folder)
 
     # (see ContextIO#api)

@@ -5,6 +5,7 @@ require 'contextio/account_collection'
 require 'contextio/source_collection'
 require 'contextio/folder_collection'
 require 'contextio/message_collection'
+require 'contextio/message_folder_collection'
 require 'contextio/body_part_collection'
 require 'contextio/thread_collection'
 require 'contextio/webhook_collection'
@@ -97,13 +98,16 @@ class ContextIO
         "accounts/#{folder.source.account.id}/sources/#{folder.source.label}/folders/#{folder.name}"
       end
 
-
       register_url ContextIO::Message do |message|
         "accounts/#{message.account.id}/messages/#{message.message_id}"
       end
 
       register_url ContextIO::MessageCollection do |messages|
         "accounts/#{messages.account.id}/messages"
+      end
+
+      register_url ContextIO::MessageFolderCollection do |message|
+        "accounts/#{message.folder.source.account.id}/sources/#{message.folder.source.label}/folders/#{message.folder.name}/messages"
       end
 
       register_url ContextIO::BodyPartCollection do |parts|

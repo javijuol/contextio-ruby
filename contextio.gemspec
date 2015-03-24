@@ -29,4 +29,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'redcarpet'
   gem.add_development_dependency 'pry-doc'
   gem.add_development_dependency 'webmock'
+
+  gem.add_development_dependency 'debase'
+  gem.add_development_dependency 'ruby-debug-ide', '~> 0.4.27'
 end
