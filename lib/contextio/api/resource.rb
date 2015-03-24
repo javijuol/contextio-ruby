@@ -8,6 +8,10 @@ class ContextIO
       # (see ContextIO#api)
       attr_reader :api
 
+      # @!attribute [r] where_constraints
+      #   A Hash of the constraints limiting this resource.
+      attr_reader :where_constraints
+
       # @private
       #
       # For internal use only. Users of this gem shouldn't be calling this
@@ -18,6 +22,7 @@ class ContextIO
       #   of attributes describing the resource.
       def initialize(api, options = {})
         validate_options(options)
+        @where_constraints = options[:where] || {}
 
         @api = api
 
@@ -68,6 +73,11 @@ class ContextIO
         self.class.primary_key
       end
 
+
+      def where(constraints)
+        self.class.new(api, {resource_url: resource_url, where: where_constraints.merge(constraints)})
+      end
+
       private
 
       # Make sure a Resource has the declarative syntax handy.
@@ -105,7 +115,7 @@ class ContextIO
       #   attributes returned from the API as a Hash. If it hasn't been
       #   populated, it will ask the API and populate it.
       def fetch_attributes
-        api.request(:get, resource_url).inject({}) do |memo, (key, value)|
+        api.request(:get, resource_url, where_constraints).inject({}) do |memo, (key, value)|
           key = key.to_s.gsub('-', '_')
 
           unless respond_to?(key)
