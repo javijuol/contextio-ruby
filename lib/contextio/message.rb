@@ -52,12 +52,12 @@ class ContextIO
       api.request(:post, "#{resource_url}/flags", args)['success']
     end
 
-    def add_to_folder(folder)
+    def add_to(folder)
       api.request(:post, "#{resource_url}/folders", {add: folder})['success']
     end
 
-    def remove_from_folder(folder)
-      api.request(:post, "#{resource_url}/folders", {add: folder})['success']
+    def remove_from(folder)
+      api.request(:post, "#{resource_url}/folders", {remove: folder})['success']
     end
 
     def body_plain
