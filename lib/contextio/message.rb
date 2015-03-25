@@ -32,7 +32,7 @@ class ContextIO
     end
 
     def flags
-      if @where.has_key?(:include_flags) && @where[:include_flags]==1
+      if @where_constraints.has_key?(:include_flags) && @where_constraints[:include_flags]==1
         attrs = self.api_attributes['flags'].map(&:downcase).map{|a| a.delete("\\")}
         @flags ||= Hash[FLAG_KEYS.map{|f| [f, attrs.include?(f)]}]
         self.api_attributes['flags'] = @flags
@@ -61,13 +61,13 @@ class ContextIO
     end
 
     def body_plain
-      @body_plain ||= @where.has_key?(:include_body) && @where[:include_body]==1 ?
+      @body_plain ||= @where_constraints.has_key?(:include_body) && @where_constraints[:include_body]==1 ?
           self.api_attributes['body'].select{|b| b['type']=='text/plain'}.map{|b| b['content']}.join :
           self.body_parts.where(type:'text/plain').map(&:content).join
     end
 
     def body_html
-      @body_html ||= @where.has_key?(:include_body) && @where[:include_body]==1 ?
+      @body_html ||= @where_constraints.has_key?(:include_body) && @where_constraints[:include_body]==1 ?
           self.api_attributes['body'].select{|b| b['type']=='text/html'}.map{|b| b['content']}.join :
           self.body_parts.where(type:'text/html').map(&:content).join
     end
