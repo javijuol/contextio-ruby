@@ -32,7 +32,7 @@ class ContextIO
     end
 
     def flags
-      if @where.has_key?(:include_flags) && !!@where[:include_flags]
+      if @where.has_key?(:include_flags) && @where[:include_flags]==1
         attrs = self.api_attributes['flags'].map(&:downcase).map{|a| a.delete("\\")}
         @flags ||= Hash[FLAG_KEYS.map{|f| [f, attrs.include?(f)]}]
         self.api_attributes['flags'] = @flags
