@@ -21,12 +21,13 @@ class ContextIO
       # @param [Hash{String, Symbol => String, Numeric, Boolean}] options A Hash
       #   of attributes describing the resource.
       def initialize(api, options = {})
-        validate_options(options)
-        @where_constraints = options[:where] || {}
+        @options ||= options
+        validate_options
+        @where_constraints = @options[:where] || {}
 
         @api = api
 
-        options.each do |key, value|
+        @options.each do |key, value|
           key = key.to_s.gsub('-', '_')
 
           if self.class.associations.include?(key.to_sym) && value.is_a?(Array)
@@ -75,7 +76,7 @@ class ContextIO
 
 
       def where(constraints)
-        self.class.new(api, {resource_url: resource_url, where: where_constraints.merge(constraints)})
+        self.class.new(api, @options.merge(where: where_constraints.merge(constraints)))
       end
 
       private
@@ -88,9 +89,7 @@ class ContextIO
       # Raises ArgumentError unless the primary key or the resource URL is
       # supplied. Use this to ensure that the initializer has or can build the
       # right URL to fetch its self.
-      #
-      # @param [Hash] options_hash The hash of options to validate.
-      def validate_options(options_hash)
+      def validate_options
         required_keys = ['resource_url', :resource_url]
 
         unless self.primary_key.nil?
@@ -98,7 +97,7 @@ class ContextIO
           required_keys << primary_key.to_sym
         end
 
-        if (options_hash.keys & required_keys).empty?
+        if (@options.keys & required_keys).empty?
           raise ArgumentError, "Required option missing. Make sure you have either resource_url or #{primary_key}."
         end
       end

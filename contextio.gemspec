@@ -21,6 +21,10 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'faraday_middleware', '~> 0.9.0'
   gem.add_dependency 'simple_oauth', '~> 0.2.0'
 
+
+  gem.add_development_dependency 'debase'
+  gem.add_development_dependency 'ruby-debug-ide', '~> 0.4.27'
+
   gem.add_development_dependency 'bundler'
   gem.add_development_dependency 'rubygems-tasks',  '~> 0.2'
   gem.add_development_dependency 'rspec',           '~> 2.14'
@@ -29,7 +33,4 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'redcarpet'
   gem.add_development_dependency 'pry-doc'
   gem.add_development_dependency 'webmock'
-
-  gem.add_development_dependency 'debase'
-  gem.add_development_dependency 'ruby-debug-ide', '~> 0.4.27'
 end
