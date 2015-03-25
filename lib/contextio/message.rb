@@ -15,7 +15,11 @@ class ContextIO
     lazy_attributes :date, :folders, :addresses, :subject, :list_help,
                     :list_unsubscribe, :message_id, :email_message_id,
                     :gmail_message_id, :gmail_thread_id, :person_info,
-                    :date_received, :date_indexed, :in_reply_to, :references
+                    :date_received, :date_indexed, :in_reply_to, :references,
+                    :flags
+
+
+    FLAG_KEYS = %w(seen answered flagged deleted draft $notjunk notjunk)
 
     private :date_received, :date_indexed
 
@@ -28,7 +32,13 @@ class ContextIO
     end
 
     def flags
-      api.request(:get, "#{resource_url}/flags")
+      if @where.has_key?(:include_flags) && !!@where[:include_flags]
+        attrs = self.api_attributes['flags'].map(&:downcase).map{|a| a.delete("\\")}
+        @flags ||= Hash[FLAG_KEYS.map{|f| [f, attrs.include?(f)]}]
+        self.api_attributes['flags'] = @flags
+      else
+        @flags ||= api.request(:get, "#{resource_url}/flags")
+      end
     end
 
     # As of this writing, the documented valid flags are: seen, answered,
@@ -40,10 +50,6 @@ class ContextIO
       end
 
       api.request(:post, "#{resource_url}/flags", args)['success']
-    end
-
-    def folders
-      api.request(:get, "#{resource_url}/folders").collect { |f| f['name'] }
     end
 
     def headers
