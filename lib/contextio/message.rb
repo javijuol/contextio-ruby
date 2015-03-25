@@ -41,6 +41,25 @@ class ContextIO
       end
     end
 
+    # As of this writing, the documented valid flags are: seen, answered,
+    # flagged, deleted, and draft. However, this will send whatever you send it.
+    def set_flags(flag_hash)
+      args = flag_hash.inject({}) do |memo, (flag_name, value)|
+        memo[flag_name] = value ? 1 : 0
+        memo
+      end
+
+      api.request(:post, "#{resource_url}/flags", args)['success']
+    end
+
+    def add_to_folder(folder)
+      api.request(:post, "#{resource_url}/folders", {add: folder})['success']
+    end
+
+    def remove_from_folder(folder)
+      api.request(:post, "#{resource_url}/folders", {add: folder})['success']
+    end
+
     def body_plain
       @body_plain ||= @where.has_key?(:include_body) && @where[:include_body]==1 ?
           self.api_attributes['body'].select{|b| b['type']=='text/plain'}.map{|b| b['content']}.join :
@@ -51,17 +70,6 @@ class ContextIO
       @body_html ||= @where.has_key?(:include_body) && @where[:include_body]==1 ?
           self.api_attributes['body'].select{|b| b['type']=='text/html'}.map{|b| b['content']}.join :
           self.body_parts.where(type:'text/html').map(&:content).join
-    end
-
-    # As of this writing, the documented valid flags are: seen, answered,
-    # flagged, deleted, and draft. However, this will send whatever you send it.
-    def set_flags(flag_hash)
-      args = flag_hash.inject({}) do |memo, (flag_name, value)|
-        memo[flag_name] = value ? 1 : 0
-        memo
-      end
-
-      api.request(:post, "#{resource_url}/flags", args)['success']
     end
 
     def headers
