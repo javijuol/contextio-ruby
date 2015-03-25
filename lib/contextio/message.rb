@@ -16,7 +16,7 @@ class ContextIO
                     :list_unsubscribe, :message_id, :email_message_id,
                     :gmail_message_id, :gmail_thread_id, :person_info,
                     :date_received, :date_indexed, :in_reply_to, :references,
-                    :flags
+                    :flags, :body
 
 
     FLAG_KEYS = %w(seen answered flagged deleted draft $notjunk notjunk)
@@ -39,6 +39,18 @@ class ContextIO
       else
         @flags ||= api.request(:get, "#{resource_url}/flags")
       end
+    end
+
+    def body_plain
+      @body_plain ||= @where.has_key?(:include_body) && @where[:include_body]==1 ?
+          self.api_attributes['body'].select{|b| b['type']=='text/plain'}.map{|b| b['content']}.join :
+          self.body_parts.where(type:'text/plain').map(&:content).join
+    end
+
+    def body_html
+      @body_html ||= @where.has_key?(:include_body) && @where[:include_body]==1 ?
+          self.api_attributes['body'].select{|b| b['type']=='text/html'}.map{|b| b['content']}.join :
+          self.body_parts.where(type:'text/html').map(&:content).join
     end
 
     # As of this writing, the documented valid flags are: seen, answered,
