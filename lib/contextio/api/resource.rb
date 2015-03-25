@@ -76,6 +76,7 @@ class ContextIO
 
 
       def where(constraints)
+        constraints.each{|i,c| constraints[i] = (c ? 1 : 0) unless c.is_a? Integer}
         self.class.new(api, @options.merge(where: where_constraints.merge(constraints)))
       end
 
